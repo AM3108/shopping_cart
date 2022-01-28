@@ -21,11 +21,23 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   DBHelper? dbHelper = DBHelper();
    List<ProductItem> productData = [];
+  final TextEditingController txtsearch = new TextEditingController();
+  ScrollController _scrollController = ScrollController();
+  List<ProductItem> data = ProductDataProvider().productItems;
+  int pageNo = 0;
+  int pageSize = 10;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     filterData(widget.category);
+    _scrollController.addListener(() {
+      if(_scrollController.position.pixels == _scrollController.position.maxScrollExtent)
+      {
+        pageNo++;
+        filterData(widget.category);
+      }
+    });
   }
 
   @override
@@ -60,9 +72,62 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                  border: Border.all(
+
+                      color: Colors.grey,
+                      style: BorderStyle.solid,
+                      width: 1.0),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(40.0)),
+              child: Column(
+                children: <Widget>[
+
+                  GestureDetector(
+
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 0.0,),
+
+                      child: TextField(
+                        autofocus: false,
+                        controller: txtsearch,
+                        onChanged: (value) => updateSearchState(value),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Search ',
+                          hintStyle: TextStyle(
+                            fontSize: 13,
+                            fontFamily: 'Montserrat',
+                            color: Colors.grey,
+
+                          ),
+                          icon:
+                          IconButton(
+                            icon: Icon(Icons.search, size: 15,),
+                            onPressed: (){
+                              updateSearchState(txtsearch.text.toString());
+                              // MyNavigator.goToSearch(context);
+                            },
+                          ),
+                        ),
+                      ),
+
+                    ),
+                    // onTap: (){MyNavigator.goToSearch(context);},
+                  ),
+                ],
+              ),
+
+            ),
+          ),
           Expanded(
             child: ListView.builder(
                 itemCount: productData.length,
+                controller: _scrollController,
                 itemBuilder: (context, index){
               return Card(
                 child: Padding(
@@ -164,11 +229,54 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ),
     );
   }
+
+  updateSearchState(String text) {
+    // latestId = 0;
+    // defaultRecordSize = 100;
+    if (text.isNotEmpty) {
+      setState(() {
+        productData = [];
+        for (int i = 0; i < data.length; i++)
+        {
+          String val = data[i].productName;
+          if(val.toLowerCase().contains(text.toLowerCase())){
+            productData.add(data[i]);
+          }
+        }
+      });
+    }
+    else if(text.isEmpty){
+      setState(() {
+        productData = [];
+       filterData(widget.category);
+      });
+    }
+  }
+
   void filterData(String category){
-    List<ProductItem> data = ProductDataProvider().productItems;
-    category == "ALL" ? productData.addAll(data) : data.forEach((element) {
-      category == element.category ? productData.add(element) : productData;
-    });
+    if(category == "ALL")
+      {
+        for(int row = (pageNo*pageSize)+1; row <= (pageNo*pageSize)+pageSize; row++)
+          {
+            if(row <= data.length) {
+              productData.add(data[row-1]);
+            }
+          }
+      }
+    else {
+      for(int row = (pageNo*pageSize)+1; row <= (pageNo*pageSize)+pageSize; row++)
+      {
+        if(row <= data.length) {
+          String val = data[row-1].category;
+          if(val.toLowerCase().contains(category.toLowerCase())){
+            productData.add(data[row-1]);
+          }
+        }
+      }
+      // data.forEach((element) {
+      //   category == element.category ? productData.add(element) : productData;
+      // });
+    }
   }
 }
 

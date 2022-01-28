@@ -52,6 +52,7 @@ class ProductDataProvider{
           category: 'FRUITS',
           productImage: 'https://media.istockphoto.com/photos/fruit-background-picture-id529664572?s=612x612'
       ),
+
       ProductItem(productName: 'Potato',
           productUnit: 'KG',
           productPrice: 23,
