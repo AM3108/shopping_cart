@@ -17,81 +17,88 @@ class Category extends StatefulWidget {
 
 class _CategoryState extends State<Category> {
   List<CategoryItem> categoryItems = CategoryDataProvider().categoryItems;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Category'),
+        title: const Text('Category'),
         centerTitle: true,
         actions: [
           InkWell(
-            onTap: (){
-              Navigator.push(context,MaterialPageRoute(builder: (context) => CartScreen()));
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const CartScreen()));
             },
             child: Center(
               child: Badge(
                 showBadge: true,
                 badgeContent: Consumer<CartProvider>(
-                  builder: (context, value , child){
-                    return Text(value.getCounter().toString(),style: TextStyle(color: Colors.white));
+                  builder: (context, value, child) {
+                    return Text(value.getCounter().toString(),
+                        style: const TextStyle(color: Colors.white));
                   },
                 ),
                 animationType: BadgeAnimationType.fade,
-                animationDuration: Duration(milliseconds: 300),
-                child: Icon(Icons.shopping_bag_outlined),
+                animationDuration: const Duration(milliseconds: 300),
+                child: const Icon(Icons.shopping_bag_outlined),
               ),
             ),
           ),
-
-          SizedBox(width: 20.0)
+          const SizedBox(width: 20.0)
         ],
       ),
       body: Column(
-        children: [
-          _getEvents
-        ],
+        children: [_getEvents],
       ),
     );
   }
-  get _getEvents{
+
+  get _getEvents {
     return GridView.builder(
       scrollDirection: Axis.vertical,
-      physics: ScrollPhysics(),
+      physics: const ScrollPhysics(),
       shrinkWrap: true,
       itemCount: categoryItems.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: MediaQuery.of(context).orientation ==
-            Orientation.landscape ? 3: 2,
+        crossAxisCount:
+            MediaQuery.of(context).orientation == Orientation.landscape ? 3 : 2,
         childAspectRatio: (2 / 2),
         crossAxisSpacing: 4,
         mainAxisSpacing: 4,
       ),
-      itemBuilder: (context,index,) {
+      itemBuilder: (
+        context,
+        index,
+      ) {
         return GestureDetector(
-          onTap:(){
-            Navigator.push(context, MaterialPageRoute(builder: (_) => ProductListScreen(category: categoryItems[index].categoryName,)));
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => ProductListScreen(
+                          category: categoryItems[index].categoryName,
+                        )));
           },
-          child:Container(
-            child: Column(
-              mainAxisAlignment:MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: SizedBox(
                     height: 200,
-                    child:
-                    Image.network(categoryItems[index].categoryImage)
+                    child: Image.network(categoryItems[index].categoryImage)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                child: Text(
+                  categoryItems[index].categoryName,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
-                Padding(
-                    padding: const EdgeInsets.only(top: 5,bottom: 5),
-                    child: Text(categoryItems[index].categoryName, style:TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

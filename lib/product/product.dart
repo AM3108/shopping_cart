@@ -1,16 +1,7 @@
-
 class ProductData {
   List<ProductItem> productItems;
 
   ProductData({required this.productItems});
-
-  // void addProduct(ShopItem p) {
-  //   shopitems.add(p);
-  // }
-  //
-  // void removeProduct(ShopItem p) {
-  //   shopitems.add(p);
-  // }
 }
 
 class ProductItem {
@@ -22,5 +13,10 @@ class ProductItem {
   int quantity;
 
   ProductItem(
-      { required this.productName, required this.productImage, required this.productPrice, required this.quantity, required this.category, required this.productUnit});
+      {required this.productName,
+      required this.productImage,
+      required this.productPrice,
+      required this.quantity,
+      required this.category,
+      required this.productUnit});
 }
